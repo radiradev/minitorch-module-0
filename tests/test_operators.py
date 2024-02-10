@@ -107,17 +107,18 @@ def test_sigmoid(a: float) -> None:
     * It crosses 0 at 0.5
     * It is  strictly increasing.
     """
-    assert sigmoid(a) > 0.0 and sigmoid(a) < 0.0
-    assert 1 - sigmoid(a) == -sigmoid(a)
-    assert sigmoid(0.0) == 0.5
-    assert sigmoid(a + a) > sigmoid(a)
+    assert sigmoid(a) >= 0.0 and sigmoid(a) <= 1.0
+    assert_close(1 - sigmoid(a), sigmoid(-a))
+    assert_close(sigmoid(0.0), 0.5)
+    assert sigmoid(abs(a + a)) >= sigmoid((abs(a)))
 
 
 @pytest.mark.task0_2
 @given(small_floats, small_floats, small_floats)
 def test_transitive(a: float, b: float, c: float) -> None:
     "Test the transitive property of less-than (a < b and b < c implies a < c)"
-    pass
+    if a < b and b < c:
+        assert lt(a, c) == 1.0
 
 
 @pytest.mark.task0_2
@@ -137,7 +138,7 @@ def test_distribute(a: float, b: float, c: float) -> None:
     Write a test that ensures that your operators distribute, i.e.
     :math:`z \times (x + y) = z \times x + z \times y`
     """
-    assert mul(a, add(b, c)) == add(mul(a, b), mul(a, c))
+    assert_close(mul(a, add(b, c)), add(mul(a, b), mul(a, c)))
 
 
 @pytest.mark.task0_2
